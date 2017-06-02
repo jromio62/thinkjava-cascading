@@ -1,0 +1,25 @@
+{
+  "patientId": "593120090d61d1ec2e6fdf80",
+  "age": 33,
+  "name": "Helena Russell",
+  "gender": "female",
+  "phone": "+1 (922) 421-3981",
+  "address": "236 Arlington Place, Yettem, Minnesota, 2757",
+  "labs": [
+    {
+      "id": 0,
+      "type": 342,
+      "result": 3.8708,
+      "performed": "2017Y-04-18T19:49"
+    },
+    {
+      "id": 1,
+      "type": 866,
+      "result": 3.2737,
+      "performed": "2017Y-02-05T07:13"
+    }
+  ]
+}
+
+
+

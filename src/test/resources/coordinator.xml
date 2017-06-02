@@ -1,0 +1,49 @@
+<coordinator-app name="JsontoCsvCoordinator" frequency="${coord:days(1)}"
+                 start="${start}" end="${end}" timezone="America/Los_Angeles" xmlns="uri:oozie:coordinator:0.2">
+
+    <controls>
+        <timeout>${timeout}</timeout>
+    </controls>
+
+    <datasets>
+        <dataset name="jsonData" frequency="${coord:hours(1)}"
+                 initial-instance="${start}" timezone="America/New_York">
+            <uri-template>${{inputBasePath}}/${YEAR}/${MONTH}/${DAY}
+            </uri-template>
+        </dataset>
+        <dataset name="csvData" frequency="${coord:hours(1)}"
+                 initial-instance="${start}" timezone="America/New_York">
+            <uri-template>${{outputBasePath}}/${YEAR}/${MONTH}/${DAY}
+            </uri-template>
+        </dataset>
+     </datasets>
+
+    <input-events>
+        <data-in name="jsonDataInput" dataset="jsonData">
+            <instance>${coord:current(0)}</instance>
+        </data-in>
+    </input-events>
+
+    <output-events>
+        <data-out name="csvDataOutput" dataset="csvData">
+            <instance>${coord:current(0)}</instance>
+        </data-out>
+    </output-events>
+
+    <action>
+        <workflow>
+            <app-path>${workflowAppUri}</app-path>
+            <configuration>
+                <property>
+                    <name>inputPatientPath</name>
+                    <value>${coord:dataOut('jsonDataInput')}</value>
+                </property>
+                <property>
+                    <name>outputPath</name>
+                    <value>${coord:dataOut('jsonDataInput')}</value>
+                </property>
+           </configuration>
+        </workflow>
+    </action>
+
+</coordinator-app>

@@ -1,0 +1,65 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+
+version = '1.0'
+
+repositories{
+    maven { url "http://conjars.org/repo/" }
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
+    }
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+compileJava {
+    targetCompatibility = 1.8
+}
+
+configurations { providedCompile }
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    // Hadoop
+    providedCompile("org.apache.hadoop:hadoop-hdfs:${hadoopVersion}")
+    providedCompile("org.apache.hadoop:hadoop-common:${hadoopVersion}")
+    providedCompile("org.apache.hadoop:hadoop-mapreduce-client-core:${hadoopVersion}")
+
+    // Tez
+    compile("org.apache.tez:tez-mapreduce:${tezVersion}")
+    compile("org.apache.tez:tez-api:${tezVersion}")
+    compile("org.apache.tez:tez-dag:${tezVersion}")
+
+    // Cascading
+    compile( "cascading:cascading-core:${cascadingVersion}")
+    compile( "cascading:cascading-hadoop2-tez:${cascadingVersion}" )
+    compile( "cascading:cascading-local:${cascadingVersion}")
+    compile( "cascading:cascading-hadoop2-mr1:${cascadingVersion}")
+
+    compile( "junit:junit:4.12")
+}
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.test.runtimeClasspath += configurations.providedCompile
+
+jar {
+    manifest {
+        attributes( "Main-Class": "com.thinkjava.cascading.Main" )
+    }
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.1'
+}

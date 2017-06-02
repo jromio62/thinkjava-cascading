@@ -1,0 +1,27 @@
+<workflow-app name="CascadingFlow" xmlns="uri:oozie:workflow:0.4">
+    <start to="standardizeJson" />
+
+    <action name="standardizeJson">
+        <java>
+            <job-tracker>http://sandbox.hortonworks.com:8032</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                <delete path="hdfs://sandbox.hortonworks.com:8020/thinkjava/output"></delete>
+            </prepare>
+            <main-class>com.thinkjava.cascading.Main</main-class>
+            <arg>hdfs://sandbox.hortonworks.com:8020/thinkjava/data/${jsonInput}</arg>
+            <arg>hdfs://sandbox.hortonworks.com:8020/thinkjava/data/${csvInput}</arg>
+            <arg>hdfs://sandbox.hortonworks.com:8020/thinkjava/${output}</arg>
+            <file>lib/cascading-tez-sample-1.0-all.jar</file>
+        </java>
+        <ok to="end" />
+        <error to="kill" />
+    </action>
+
+    <kill name="kill">
+        <message>Action failed, error
+            message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+
+    <end name="end" />
+</workflow-app>
